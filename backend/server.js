@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import products from "./data/products.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 //const port = 5001;
 const port = process.env.PORT || 5001;
 connectDB(); //Connect to MongoDB
@@ -14,6 +15,10 @@ const app = express();
 //body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//cookie parser middleware
+
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("API is running...");
