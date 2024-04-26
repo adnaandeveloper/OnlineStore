@@ -5,21 +5,61 @@ import Order from "../models/OrderModel.js";
 // @route POST /api/orders
 // @access Private
 const addOrderItems = asyncHanlder(async (req, res) => {
-  res.send("add order items");
+  const {
+    OrderItems,
+    shippingAddress,
+    paymentMethod,
+    itemPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+  } = req.body;
+
+  if (orderItems && orderItems.length === 0) {
+    res.status(400);
+    throw new Error("No order items");
+  } else {
+    const order = new Order({
+      OrderItems: orderItems.map((x) => ({
+        ...x,
+        product: x._id,
+        _id: undefined,
+      })),
+      user: req.user._id,
+      shippingAddress,
+      paymentMethod,
+      itemPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+    });
+    const createOrder = await order.save();
+
+    res.status(200).json(createOrder);
+  }
 });
 
-// @desc Get loggedin user orders
+// @desc Get loggedin user ordersgit
 // @route GET /api/orders/myorders
 // @access Private
 const getMyOrders = asyncHanlder(async (req, res) => {
-  res.send("get my orders");
+  const orders = await Order.find({ user: req.user._id });
+  res.status(200).json(orders);
 });
 
 // @desc Get order by ID
 // @route GET /api/orders/:id
 // @access Private
 const getOrderById = asyncHanlder(async (req, res) => {
-  res.send("get order by id");
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+  if (order) {
+    res.status(200).json(orders);
+  } else {
+    res.status(404), throw new Error("Order not found");
+  }
 });
 
 // @desc update order to paid
