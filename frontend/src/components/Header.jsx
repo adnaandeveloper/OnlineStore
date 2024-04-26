@@ -16,7 +16,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const [logoutApiCall] = useLogoutMutation(); // you can call it what ever you want
-  console.log({ cartItems });
+  // console.log({ cartItems });
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
