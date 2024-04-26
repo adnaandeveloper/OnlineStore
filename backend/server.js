@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import products from "./data/products.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import cookieParser from "cookie-parser";
 //const port = 5001;
 const port = process.env.PORT || 5001;
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.use(notFound); //NotFound middleware my own
 app.use(errorHanlder); //Error handler my own
