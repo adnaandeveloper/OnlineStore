@@ -6,7 +6,7 @@ import Order from "../models/OrderModel.js";
 // @access Private
 const addOrderItems = asyncHanlder(async (req, res) => {
   const {
-    OrderItems,
+    orderItems,
     shippingAddress,
     paymentMethod,
     itemPrice,
@@ -20,7 +20,7 @@ const addOrderItems = asyncHanlder(async (req, res) => {
     throw new Error("No order items");
   } else {
     const order = new Order({
-      OrderItems: orderItems.map((x) => ({
+      orderItems: orderItems.map((x) => ({
         ...x,
         product: x._id,
         _id: undefined,
@@ -58,7 +58,8 @@ const getOrderById = asyncHanlder(async (req, res) => {
   if (order) {
     res.status(200).json(orders);
   } else {
-    res.status(404), throw new Error("Order not found");
+    res.status(404);
+    throw new Error("Order");
   }
 });
 
