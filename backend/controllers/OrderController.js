@@ -9,7 +9,7 @@ const addOrderItems = asyncHanlder(async (req, res) => {
     orderItems,
     shippingAddress,
     paymentMethod,
-    itemPrice,
+    itemsPrice,
     taxPrice,
     shippingPrice,
     totalPrice,
@@ -28,7 +28,7 @@ const addOrderItems = asyncHanlder(async (req, res) => {
       user: req.user._id,
       shippingAddress,
       paymentMethod,
-      itemPrice,
+      itemsPrice,
       taxPrice,
       shippingPrice,
       totalPrice,
@@ -51,11 +51,11 @@ const getMyOrders = asyncHanlder(async (req, res) => {
 // @route GET /api/orders/:id
 // @access Private
 const getOrderById = asyncHanlder(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate(
+  const orders = await Order.findById(req.params.id).populate(
     "user",
     "name email"
   );
-  if (order) {
+  if (orders) {
     res.status(200).json(orders);
   } else {
     res.status(404);
@@ -64,14 +64,27 @@ const getOrderById = asyncHanlder(async (req, res) => {
 });
 
 // @desc update order to paid
-// @route GET /api/orders/:id/pay
+// @route Put /api/orders/:id/pay
 // @access Private
 const updateOrderToPaid = asyncHanlder(async (req, res) => {
-  res.send("update order to paid ");
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address,
+    };
+    const updateOrder = await order.save();
+    res.status(200).json(updateOrder);
+  }
 });
 
 // @desc update order to delivered
-// @route GET /api/orders/:id/deliver
+// @route Put /api/orders/:id/deliver
 // @access Private/admin
 const updateOrderToDelevered = asyncHanlder(async (req, res) => {
   res.send("update order to paid ");
