@@ -95,6 +95,19 @@ const OrderScreen = () => {
     toast.error(error.message);
   };
 
+  const deliverHandler = async () => {
+    //await deliverOrder(orderId);
+    //refetch();
+
+    try {
+      await deliverOrder(orderId);
+      refetch();
+      toast.success("Order delivered");
+    } catch (error) {
+      toast.error(error?.data?.message || error.message);
+    }
+  };
+
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -114,7 +127,7 @@ const OrderScreen = () => {
                 <strong>Email: </strong> {order.user.email}
               </p>
               <p>
-                <strong>Address: </strong> {order.shippingAddress.address}{" "}
+                <strong>Address: </strong> {order.shippingAddress.address}
                 {order.shippingAddress.city}, {order.shippingAddress.postalCode}
                 , {order.shippingAddress.country}
               </p>
@@ -212,6 +225,21 @@ const OrderScreen = () => {
                   )}
                 </ListGroup.Item>
               )}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={deliverHandler}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>
